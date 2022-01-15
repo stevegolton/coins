@@ -1,109 +1,117 @@
-$fn=128;
-
-Coin25(0);
-
-translate([-50, 0, 0]) {
-    Coin25(180);
-}
-
-module Coin25(rotation) {
+// Slices an object into two halves along the x/y plane and places them side by side.
+// The bottom slice is flipped.
+// Useful for printing.
+module SliceIntoTwoHalves(offset) {
+    // Top half of the coin
     difference() {
-        rotate([0, rotation, 0]) {
-            CenteredCoin(38.70/2, 11.18, 3.7, "25", "TWENTY FIVE");
-        }
+        children();
 
         union() {
             translate([-50, -50, -100]) {
                 cube([100, 100, 100]);
             }
-            
-            // A little notch, to make it easier to align the two halves when glueing
-            translate([-.5, 15, -1]) {
-                cube([1, 10, 1.5]);
-            }
         }
     }
-}
-
-//Coin(32/2, 16.5, 3.7, "10", "TEN");
-//Coin(36/2, 13.5, 3.7, "5", "FIVE");
     
-module CenteredCoin(radius, height, rimw, text, backtext) {
-    translate([0, 0, -height/2]) {
-        Coin(radius, height, rimw, text, backtext);
+    // Bottom half of the coin
+    translate([offset, 0, 0]) {
+        difference() {
+            rotate([0, 180, 0]) {
+                children();
+            }
+
+            union() {
+                translate([-50, -50, -100]) {
+                    cube([100, 100, 100]);
+                }
+            }
+        }
     }
 }
 
 /**
  * Creates a coin.
  */
-module Coin(radius, height, rimw, text, backtext) {
+module Coin(radius, height, rimw, fronttext, backtext, centeredVertically=false) {
     DEPTH=4;
     
-    difference() {
-        cylinder(h=height, r=radius);
-        
-        // Top indent
-        translate([0, 0, height-DEPTH]) {
-            cylinder(h=100, r=radius - rimw);
-        }
-        
-        // Bottom indent
-        translate([0, 0, DEPTH]) {
-            rotate([180, 0, 0]) {
+    offset = centeredVertically? -height/2 : 0;
+    
+    translate([0, 0, offset]) {
+        difference() {
+            cylinder(h=height, r=radius);
+            
+            // Top indent
+            translate([0, 0, height-DEPTH]) {
                 cylinder(h=100, r=radius - rimw);
             }
-        }
-    }
-    
-    // Top text
-    translate([0, 0, height-DEPTH]) {
-        linear_extrude(height=1.5) {
-            text(
-                halign="center",
-                valign="center",
-                size=radius-2,
-                font="Noto Sans Black:style=Bold",
-                text);
-        }
-    }
-    
-    BOTTOM_TEXT_HEIGHT=1;
-    
-    // Bottom text
-    // TODO needs some work
-    translate([0, 0, DEPTH]) {
-        rotate([180, 0, 98]) {
-            linear_extrude(height=BOTTOM_TEXT_HEIGHT) {
-                revolve_text(radius-rimw-4.5, backtext, 0.5);
+            
+            // Bottom indent
+            translate([0, 0, DEPTH]) {
+                rotate([180, 0, 0]) {
+                    cylinder(h=100, r=radius - rimw);
+                }
             }
         }
         
-        rotate([0, 180, 0]) {
-            translate([-6, -6, 0]) {
-                rotate([0, 0, -15]) {
-                    cylinder(h=BOTTOM_TEXT_HEIGHT, r=10.4/2);
-                    linear_extrude(BOTTOM_TEXT_HEIGHT + BOTTOM_TEXT_HEIGHT) {
-                        text(
-                            "s",
-                            valign="center",
-                            halign="center",
-                            size=7,
-                            font="Noto Serif ExtraBold");
-                    }
+        // Top text
+        translate([0, 0, height-DEPTH]) {
+            linear_extrude(height=1.5) {
+                text(
+                    halign="center",
+                    valign="center",
+                    size=radius-2,
+                    font="Noto Sans Black:style=Bold",
+                    fronttext);
+            }
+        }
+        
+        BOTTOM_TEXT_HEIGHT=1;
+        feature_size = radius - rimw;
+        
+        // Bottom text
+        // TODO needs some work
+        translate([0, 0, DEPTH]) {
+            
+            backtext_font_size = 4 * feature_size / 15.65;
+            
+            rotate([180, 0, 180]) {
+                linear_extrude(height=BOTTOM_TEXT_HEIGHT) {
+                    revolve_text(radius-rimw-4.5, backtext, backtext_font_size, 18);
                 }
             }
             
-            translate([6, -6, 0]) {
-                rotate([0, 0, 15]) {
-                    cylinder(h=BOTTOM_TEXT_HEIGHT, r=10.4/2);
-                    linear_extrude(BOTTOM_TEXT_HEIGHT + BOTTOM_TEXT_HEIGHT) {
-                        text(
-                            "g",
-                            valign="center",
-                            halign="center",
-                            size=7,
-                            font="Noto Serif ExtraBold");
+            disk_diameter = 10.4 * feature_size / 15.65;
+            disk_offset = 6 * feature_size / 15.65;
+            disk_font_size = 7 * feature_size / 15.65;
+            echo(disk_diameter);
+            
+            rotate([0, 180, 0]) {
+                translate([-disk_offset, -disk_offset, 0]) {
+                    rotate([0, 0, -15]) {
+                        cylinder(h=BOTTOM_TEXT_HEIGHT, r=disk_diameter/2);
+                        linear_extrude(BOTTOM_TEXT_HEIGHT + BOTTOM_TEXT_HEIGHT) {
+                            text(
+                                "s",
+                                valign="center",
+                                halign="center",
+                                size=disk_font_size,
+                                font="Noto Serif ExtraBold");
+                        }
+                    }
+                }
+                
+                translate([disk_offset, -disk_offset, 0]) {
+                    rotate([0, 0, 15]) {
+                        cylinder(h=BOTTOM_TEXT_HEIGHT, r=disk_diameter/2);
+                        linear_extrude(BOTTOM_TEXT_HEIGHT + BOTTOM_TEXT_HEIGHT) {
+                            text(
+                                "g",
+                                valign="center",
+                                halign="center",
+                                size=disk_font_size,
+                                font="Noto Serif ExtraBold");
+                        }
                     }
                 }
             }
@@ -115,14 +123,18 @@ module Coin(radius, height, rimw, text, backtext) {
  * Creates text on a circle.
  * See https://openhome.cc/eGossip/OpenSCAD/TextCircle.html
  */
-module revolve_text(radius, chars, coverage) {
-    PI = 3.14159;
-    circumference = 2 * PI * radius;
-    chars_len = len(chars);
-    font_size = coverage * circumference / chars_len;
-    step_angle = coverage * 360 / chars_len;
-    for(i = [0 : chars_len - 1]) {
-        rotate(-i * step_angle) 
+module revolve_text(radius, chars, font_size, step_angle) {
+//    PI = 3.14159;
+//    circumference = 2 * PI * radius;
+//    chars_len = len(chars);
+//    font_size = coverage * circumference / chars_len;
+//    step_angle = coverage * 360 / chars_len;
+//    step_angle = 15;
+//    font_size = 10;
+    total_coverage = step_angle * (len(chars)-1);
+    offset = total_coverage / 2;
+    for(i = [0 : len(chars) - 1]) {
+        rotate(offset - (i * step_angle)) 
             translate([0, radius + font_size / 2, 0]) 
                 text(
                     chars[i], 

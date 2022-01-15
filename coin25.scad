@@ -1,4 +1,13 @@
 use <coin.scad>;
 
 $fn=128;
-Coin25(0);
+
+SliceIntoTwoHalves(offset=45) {
+    Coin(
+        radius=38.70/2,
+        height=11.18,
+        rimw=3.7,
+        fronttext="25",
+        backtext="TWENTY FIVE",
+        centeredVertically=true);
+}
