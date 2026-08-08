@@ -29,6 +29,26 @@ module SliceIntoTwoHalves(offset) {
     }
 }
 
+module RoundedCylinder(r, h, cornerRad) {
+    translate([0, 0, cornerRad]) {
+        hull() {
+            rotate_extrude(angle = 360) {
+                translate([r - cornerRad, 0, 0]) {
+                    circle(r = cornerRad);
+                }
+            }
+            
+            translate([0, 0, h-cornerRad*2]) {
+                rotate_extrude(angle = 360) {
+                    translate([r - cornerRad, 0, 0]) {
+                        circle(r = cornerRad);
+                    }
+                }
+            }
+        }
+    }
+}
+
 PIN_HEIGHT = 3;
 PIN_HEIGHT_HALF = PIN_HEIGHT / 2;
 PIN_HEIGHT_MARGIN = 0.5;
@@ -61,7 +81,7 @@ module Coin(radius, height, rimw, fronttext, backtext, centeredVertically=false)
     
     translate([0, 0, offset]) {
         difference() {
-            cylinder(h=height, r=radius);
+            RoundedCylinder(h=height, r=radius, cornerRad=.7);
             
             // Top indent
             translate([0, 0, height-DEPTH]) {
