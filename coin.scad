@@ -51,13 +51,14 @@ module RoundedCylinder(r, h, cornerRad) {
 
 PIN_HEIGHT = 3;
 PIN_HEIGHT_HALF = PIN_HEIGHT / 2;
-PIN_HEIGHT_MARGIN = 0.5;
-PIN_RAD = 3;
+PIN_HEIGHT_MARGIN = 0.8;
+PIN_RAD = 2;
 PIN_RAD_MARGIN = 0.1;
+PIN_RAD_DIFF = 1;
 
-module Pin() {
+module Pin(offset=0) {
     translate([0, 0, 0]) {
-        cylinder(h=PIN_HEIGHT-PIN_HEIGHT_MARGIN, r=PIN_RAD-PIN_RAD_MARGIN);
+        cylinder(h=PIN_HEIGHT-PIN_HEIGHT_MARGIN, r=(offset+PIN_RAD)-PIN_RAD_MARGIN);
     }
 }
 
@@ -67,7 +68,7 @@ module TwoPins() {
     }
 
     translate([20, 0, 0]) {
-        Pin();
+        Pin(offset=PIN_RAD_DIFF);
     }
 }
 
@@ -101,7 +102,7 @@ module Coin(radius, height, rimw, fronttext, backtext, centeredVertically=false)
             }
             
             translate([0, -7, (height/2) - PIN_HEIGHT_HALF]) {
-                cylinder(h=PIN_HEIGHT, r=PIN_RAD);
+                cylinder(h=PIN_HEIGHT, r=PIN_RAD+PIN_RAD_DIFF);
             }
         }
         
