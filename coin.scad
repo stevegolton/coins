@@ -49,7 +49,7 @@ module RoundedCylinder(r, h, cornerRad) {
     }
 }
 
-PIN_HEIGHT = 3;
+PIN_HEIGHT = 2;
 PIN_HEIGHT_HALF = PIN_HEIGHT / 2;
 PIN_HEIGHT_MARGIN = 0.8;
 PIN_RAD = 2;
