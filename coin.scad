@@ -147,7 +147,7 @@ module Coin(radius, height, rimw, fronttext, backtext, centeredVertically=false)
                                 valign="center",
                                 halign="center",
                                 size=disk_font_size,
-                                font="Noto Serif ExtraBold");
+                                font="Noto Serif:style=Bold");
                         }
                     }
                 }
@@ -161,7 +161,7 @@ module Coin(radius, height, rimw, fronttext, backtext, centeredVertically=false)
                                 valign="center",
                                 halign="center",
                                 size=disk_font_size,
-                                font="Noto Serif ExtraBold");
+                                font="Noto Serif:style=Bold");
                         }
                     }
                 }
