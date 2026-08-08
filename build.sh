@@ -3,9 +3,9 @@ set -euo pipefail
 
 mkdir -p out
 
-for file in coin5.scad coin10.scad coin25.scad; do
-  echo "Converting $file..."
-  openscad -o "out/${file%.scad}.stl" "$file"
-done
+openscad -o out/coin5.stl coin5.scad &
+openscad -o out/coin10.stl coin10.scad &
+openscad -o out/coin25.stl coin25.scad &
+wait
 
 echo "Done."
