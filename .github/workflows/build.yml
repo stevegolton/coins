@@ -1,0 +1,25 @@
+name: Build STLs
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install OpenSCAD
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y openscad fonts-noto-core fonts-noto
+
+      - name: Build
+        run: ./build.sh
+
+      - name: Upload STLs
+        uses: actions/upload-artifact@v4
+        with:
+          name: coins
+          path: out/*.stl
