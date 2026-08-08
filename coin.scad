@@ -29,6 +29,28 @@ module SliceIntoTwoHalves(offset) {
     }
 }
 
+PIN_HEIGHT = 3;
+PIN_HEIGHT_HALF = PIN_HEIGHT / 2;
+PIN_HEIGHT_MARGIN = 0.5;
+PIN_RAD = 3;
+PIN_RAD_MARGIN = 0.1;
+
+module Pin() {
+    translate([0, 0, 0]) {
+        cylinder(h=PIN_HEIGHT-PIN_HEIGHT_MARGIN, r=PIN_RAD-PIN_RAD_MARGIN);
+    }
+}
+
+module TwoPins() {
+    translate([0, 0, 0]) {
+        Pin();
+    }
+
+    translate([20, 0, 0]) {
+        Pin();
+    }
+}
+
 /**
  * Creates a coin.
  */
@@ -51,6 +73,15 @@ module Coin(radius, height, rimw, fronttext, backtext, centeredVertically=false)
                 rotate([180, 0, 0]) {
                     cylinder(h=100, r=radius - rimw);
                 }
+            }
+            
+            // Pin holes
+            translate([0, 7, (height/2) - PIN_HEIGHT_HALF]) {
+                cylinder(h=PIN_HEIGHT, r=PIN_RAD);
+            }
+            
+            translate([0, -7, (height/2) - PIN_HEIGHT_HALF]) {
+                cylinder(h=PIN_HEIGHT, r=PIN_RAD);
             }
         }
         

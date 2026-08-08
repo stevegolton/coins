@@ -11,3 +11,7 @@ SliceIntoTwoHalves(offset=45) {
         backtext="TWENTY FIVE",
         centeredVertically=true);
 }
+
+translate([0, 40, 0]) {
+    TwoPins();
+}
