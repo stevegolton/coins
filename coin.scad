@@ -108,7 +108,7 @@ module Coin(radius, height, rimw, fronttext, backtext, centeredVertically=false)
             
             rotate([180, 0, 180]) {
                 linear_extrude(height=BOTTOM_TEXT_HEIGHT) {
-                    revolve_text(radius-rimw-4.5, backtext, backtext_font_size, 18);
+                    revolve_text(radius-rimw-4.6, backtext, backtext_font_size, 18);
                 }
             }
             
